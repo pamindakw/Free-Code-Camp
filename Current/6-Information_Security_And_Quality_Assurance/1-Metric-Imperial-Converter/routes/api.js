@@ -17,14 +17,19 @@ module.exports = function (app) {
 
   app.route('/api/convert')
     .get(function (req, res){
-      var input = req.query.input;
-      var initNum = convertHandler.getNum(input);
-      var initUnit = convertHandler.getUnit(input);
-      var returnNum = convertHandler.convert(initNum, initUnit);
-      var returnUnit = convertHandler.getReturnUnit(initUnit);
-      var toString = convertHandler.getString(initNum, initUnit, returnNum, returnUnit);
+
+      const obj = {};
+
+      const conversion = convertHandler.convert(req.query.measurement, req.query.unitType);
+      const toString = convertHandler.getString(req.query.measurement, req.query.unitType, conversion.measurement, conversion.unitType);
       
-      //res.json
+      obj['inputMeasurement'] = req.query.measurement;
+      obj['inputUnitType'] = req.query.unitType;
+      obj['outputMeasurement'] = conversion.measurement;
+      obj['outputUnitType'] = conversion.unitType;
+      
+      res.json(obj);
+
     });
     
 };
